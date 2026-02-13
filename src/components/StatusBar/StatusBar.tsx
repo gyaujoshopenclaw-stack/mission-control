@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Activity, Zap, Clock, CheckCircle2 } from 'lucide-react';
-import { useTaskStore } from '../../stores/taskStore';
+import { Activity, Clock, CheckCircle2, Search } from 'lucide-react';
+import { useTaskStore, type Density } from '../../stores/taskStore';
 import { KoalaMascot } from '../KoalaMascot';
 
+const DENSITY_OPTIONS: { value: Density; label: string }[] = [
+  { value: 'compact', label: 'Compact' },
+  { value: 'comfortable', label: 'Comfortable' },
+  { value: 'spacious', label: 'Spacious' },
+];
+
 export function StatusBar() {
-  const { tasks, toggleCommandPalette, lastCompletedAt } = useTaskStore();
+  const { tasks, lastCompletedAt, searchQuery, setSearchQuery, density, setDensity } = useTaskStore();
   const [time, setTime] = useState(new Date());
   const [celebrating, setCelebrating] = useState(false);
 
@@ -26,38 +32,57 @@ export function StatusBar() {
   const total = tasks.filter(t => t.status !== 'archived').length;
 
   return (
-    <div className="flex items-center justify-between px-4 md:px-6 py-2 bg-[#0d1117] border-b border-[#1e293b] text-sm shrink-0">
-      <div className="flex items-center gap-3 md:gap-6">
-        <div className="flex items-center gap-2 text-[#3b82f6] font-bold text-base">
-          <Zap size={18} className="animate-pulse-slow" />
-          <span className="hidden sm:inline">Mission Control</span>
-          <span className="sm:hidden">MC</span>
-        </div>
+    <div className="flex items-center justify-between px-4 md:px-6 py-2.5 bg-[#0a0e1a] border-b border-[#1e293b] shrink-0">
+      {/* Left: Logo */}
+      <div className="flex items-center gap-2.5">
         <KoalaMascot celebrating={celebrating} />
-        <div className="hidden md:flex items-center gap-1.5 text-emerald-400 text-xs">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-slow" />
-          Online
+        <span className="text-sm font-bold text-[#e2e8f0] hidden sm:inline">Mission Control</span>
+        <span className="sm:hidden text-sm font-bold text-[#e2e8f0]">MC</span>
+      </div>
+
+      {/* Center: Search */}
+      <div className="hidden md:flex flex-1 max-w-sm mx-6">
+        <div className="relative w-full">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Search tasks..."
+            className="w-full pl-8 pr-3 py-1.5 bg-[#1a2035] border border-[#1e293b] rounded-full text-xs text-[#e2e8f0] placeholder-[#475569] outline-none focus:border-[#3b82f6]/50 transition-colors"
+          />
         </div>
       </div>
 
-      <button
-        onClick={toggleCommandPalette}
-        className="hidden sm:block px-3 py-1 rounded-lg bg-[#1a2035] border border-[#1e293b] text-[#94a3b8] text-xs hover:border-[#3b82f6] transition-colors cursor-pointer"
-      >
-        ⌘K — Command
-      </button>
+      {/* Right: Density + Stats */}
+      <div className="flex items-center gap-3 md:gap-5">
+        {/* Density toggle */}
+        <div className="hidden lg:flex items-center bg-[#1a2035] rounded-full border border-[#1e293b] p-0.5">
+          {DENSITY_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              onClick={() => setDensity(opt.value)}
+              className={`px-2 py-0.5 text-[0.6rem] rounded-full transition-colors font-medium ${
+                density === opt.value
+                  ? 'bg-[#3b82f6] text-white'
+                  : 'text-[#64748b] hover:text-[#94a3b8]'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
 
-      <div className="flex items-center gap-3 md:gap-6 text-[#94a3b8] text-xs">
-        <div className="flex items-center gap-1.5">
-          <Activity size={14} className="text-cyan-400" />
+        <div className="flex items-center gap-1.5 text-[#94a3b8] text-xs">
+          <Activity size={13} className="text-cyan-400" />
           <span>{inProgress}</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <CheckCircle2 size={14} className="text-emerald-400" />
+        <div className="flex items-center gap-1.5 text-[#94a3b8] text-xs">
+          <CheckCircle2 size={13} className="text-emerald-400" />
           <span>{done}/{total}</span>
         </div>
-        <div className="hidden sm:flex items-center gap-1.5">
-          <Clock size={14} />
+        <div className="hidden sm:flex items-center gap-1.5 text-[#94a3b8] text-xs">
+          <Clock size={13} />
           <span>{time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
         </div>
       </div>

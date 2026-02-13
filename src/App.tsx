@@ -9,7 +9,7 @@ import { LaunchSequence } from './components/LaunchSequence';
 import { connectWebSocket, disconnectWebSocket } from './lib/websocket';
 
 function App() {
-  const { fetchTasks, fetchActivity, selectedTaskId } = useTaskStore();
+  const { fetchTasks, fetchActivity, selectedTaskId, density } = useTaskStore();
   const [launched, setLaunched] = useState(false);
 
   useEffect(() => {
@@ -19,7 +19,6 @@ function App() {
     return () => disconnectWebSocket();
   }, [fetchTasks, fetchActivity]);
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return;
@@ -39,7 +38,7 @@ function App() {
   }
 
   return (
-    <>
+    <div className={`density-${density} flex flex-col h-full`}>
       <StatusBar />
       <div className="flex flex-1 overflow-hidden">
         <Board />
@@ -47,7 +46,7 @@ function App() {
       </div>
       {selectedTaskId && <TaskDetail />}
       <CommandPalette />
-    </>
+    </div>
   );
 }
 

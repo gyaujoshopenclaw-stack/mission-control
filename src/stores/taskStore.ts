@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { api } from '../lib/api';
 import type { Task, Activity, TaskStatus } from '../types/task';
 
+export type Density = 'compact' | 'comfortable' | 'spacious';
+
 interface TaskStore {
   tasks: Task[];
   activity: Activity[];
@@ -12,6 +14,7 @@ interface TaskStore {
   commandPaletteOpen: boolean;
   loading: boolean;
   lastCompletedAt: number;
+  density: Density;
 
   fetchTasks: () => Promise<void>;
   fetchActivity: () => Promise<void>;
@@ -26,8 +29,17 @@ interface TaskStore {
   setFilterLabel: (l: string | null) => void;
   toggleCommandPalette: () => void;
   setLastCompletedAt: (ts: number) => void;
+  setDensity: (d: Density) => void;
 
   getFilteredTasks: (status: TaskStatus) => Task[];
+}
+
+function loadDensity(): Density {
+  try {
+    const v = localStorage.getItem('mc-density');
+    if (v === 'compact' || v === 'comfortable' || v === 'spacious') return v;
+  } catch {}
+  return 'comfortable';
 }
 
 export const useTaskStore = create<TaskStore>((set, get) => ({
@@ -40,6 +52,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   commandPaletteOpen: false,
   loading: false,
   lastCompletedAt: 0,
+  density: loadDensity(),
 
   fetchTasks: async () => {
     const tasks = await api.getTasks();
@@ -72,7 +85,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   },
 
   moveTask: async (id, newStatus, newOrder) => {
-    // Optimistic update
     set(state => ({
       tasks: state.tasks.map(t => t.id === id ? { ...t, status: newStatus, order: newOrder } : t)
     }));
@@ -81,7 +93,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   },
 
   reorderTasks: async (updates) => {
-    // Optimistic
     set(state => {
       const newTasks = [...state.tasks];
       for (const u of updates) {
@@ -101,6 +112,10 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   setFilterLabel: (l) => set({ filterLabel: l }),
   toggleCommandPalette: () => set(s => ({ commandPaletteOpen: !s.commandPaletteOpen })),
   setLastCompletedAt: (ts) => set({ lastCompletedAt: ts }),
+  setDensity: (d) => {
+    localStorage.setItem('mc-density', d);
+    set({ density: d });
+  },
 
   getFilteredTasks: (status) => {
     const { tasks, searchQuery, filterPriority, filterLabel } = get();

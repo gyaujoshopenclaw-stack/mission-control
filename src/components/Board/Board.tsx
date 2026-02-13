@@ -10,6 +10,7 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
+import { Plus } from 'lucide-react';
 import { COLUMNS, type TaskStatus } from '../../types/task';
 import { useTaskStore } from '../../stores/taskStore';
 import { Column } from './Column';
@@ -17,7 +18,7 @@ import { TaskCard } from './TaskCard';
 import confetti from 'canvas-confetti';
 
 export function Board() {
-  const { tasks, reorderTasks, setLastCompletedAt } = useTaskStore();
+  const { tasks, reorderTasks, setLastCompletedAt, toggleCommandPalette } = useTaskStore();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [mobileColumn, setMobileColumn] = useState<TaskStatus>('todo');
 
@@ -86,12 +87,12 @@ export function Board() {
       onDragEnd={handleDragEnd}
     >
       {/* Mobile tab bar */}
-      <div className="flex lg:hidden overflow-x-auto gap-1 px-3 py-2 bg-[#0d1117] border-b border-[#1e293b] shrink-0">
+      <div className="flex lg:hidden overflow-x-auto gap-1.5 px-3 py-2 bg-[#0a0e1a] border-b border-[#1e293b] shrink-0">
         {COLUMNS.map(col => (
           <button
             key={col.id}
             onClick={() => setMobileColumn(col.id)}
-            className={`px-3 py-2 text-xs font-medium rounded-lg whitespace-nowrap min-h-[2.75rem] transition-colors ${
+            className={`px-3 py-2 text-xs font-medium rounded-full whitespace-nowrap min-h-[2.75rem] transition-colors ${
               mobileColumn === col.id
                 ? 'bg-[#3b82f6] text-white'
                 : 'text-[#94a3b8] hover:bg-[#1a2035]'
@@ -103,7 +104,7 @@ export function Board() {
       </div>
 
       {/* Desktop: all columns */}
-      <div className="hidden lg:flex gap-4 px-6 py-4 overflow-x-auto flex-1">
+      <div className="hidden lg:flex col-gap px-6 py-4 overflow-x-auto flex-1">
         {COLUMNS.map(col => (
           <Column key={col.id} id={col.id} title={col.title} />
         ))}
@@ -115,6 +116,14 @@ export function Board() {
           <Column id={mobileColumn} title={COLUMNS.find(c => c.id === mobileColumn)?.title || ''} />
         </div>
       </div>
+
+      {/* Mobile FAB */}
+      <button
+        onClick={toggleCommandPalette}
+        className="lg:hidden fixed right-4 bottom-16 z-40 w-12 h-12 bg-[#3b82f6] hover:bg-[#2563eb] rounded-full shadow-lg shadow-blue-500/20 flex items-center justify-center text-white transition-colors"
+      >
+        <Plus size={22} />
+      </button>
 
       <DragOverlay>
         {activeTask ? (

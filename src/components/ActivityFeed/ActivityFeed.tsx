@@ -37,32 +37,37 @@ export function ActivityFeed() {
 
       {/* Feed panel */}
       <div className={`
-        w-72 shrink-0 border-l border-[#1e293b] bg-[#0d1117] flex flex-col
+        w-64 shrink-0 border-l border-[#1e293b] bg-[#0a0e1a] flex flex-col
         xl:relative xl:translate-x-0
         fixed right-0 top-0 bottom-0 z-40 transition-transform duration-300
         ${open ? 'translate-x-0' : 'translate-x-full xl:translate-x-0'}
         hidden xl:flex ${open ? '!flex' : ''}
       `}>
         <div className="px-4 py-3 border-b border-[#1e293b] flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[#e2e8f0] tracking-wide">Activity</h3>
+          <h3 className="text-xs font-semibold text-[#e2e8f0] tracking-wide uppercase">Activity</h3>
           <button onClick={() => setOpen(false)} className="xl:hidden text-[#94a3b8] hover:text-white">
-            <PanelRightClose size={16} />
+            <PanelRightClose size={14} />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-3 space-y-3">
+        <div className="flex-1 overflow-y-auto">
           {activity.length === 0 && (
             <p className="text-xs text-[#475569] text-center mt-8">No activity yet</p>
           )}
-          {activity.slice(0, 30).map(a => {
+          {activity.slice(0, 30).map((a, i) => {
             const Icon = ICONS[a.action] || Edit;
             const color = COLORS[a.action] || 'text-[#94a3b8]';
             const timeAgo = getTimeAgo(a.timestamp);
             return (
-              <div key={a.id} className="flex gap-2 animate-fade-in">
-                <Icon size={14} className={`mt-0.5 shrink-0 ${color}`} />
+              <div
+                key={a.id}
+                className={`flex gap-2.5 px-4 py-2.5 animate-fade-in ${
+                  i < activity.slice(0, 30).length - 1 ? 'border-b border-[#1e293b]/60' : ''
+                }`}
+              >
+                <Icon size={13} className={`mt-0.5 shrink-0 ${color}`} />
                 <div className="min-w-0">
-                  <p className="text-xs text-[#e2e8f0] truncate">{a.taskTitle}</p>
-                  <p className="text-[0.65rem] text-[#64748b]">{a.details} · {timeAgo}</p>
+                  <p className="text-[0.7rem] text-[#e2e8f0] truncate">{a.taskTitle}</p>
+                  <p className="text-[0.6rem] text-[#64748b]">{a.details} · {timeAgo}</p>
                 </div>
               </div>
             );

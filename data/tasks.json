@@ -10,9 +10,9 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 0,
+    "order": 8,
     "taskNumber": "MC-1"
   },
   {
@@ -26,9 +26,9 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 1,
+    "order": 0,
     "taskNumber": "MC-4"
   },
   {
@@ -42,14 +42,14 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 2,
+    "order": 1,
     "taskNumber": "MC-7"
   },
   {
     "id": "03f863b1-6134-46fb-b82c-41cba01162c2",
-    "title": "Convert your weekly plan into a 1-page **Weekly Card** (Mon\u2013Sun)",
+    "title": "Convert your weekly plan into a 1-page **Weekly Card** (Mon–Sun)",
     "description": "",
     "status": "backlog",
     "priority": "medium",
@@ -58,9 +58,9 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 3,
+    "order": 2,
     "taskNumber": "MC-9"
   },
   {
@@ -74,14 +74,14 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 10,
+    "order": 7,
     "taskNumber": "MC-18"
   },
   {
     "id": "54d11105-dacd-4f2a-af78-ee1091596485",
-    "title": "\u201cBad Morning Recovery Protocol\u201d template",
+    "title": "“Bad Morning Recovery Protocol” template",
     "description": "",
     "status": "backlog",
     "priority": "medium",
@@ -90,9 +90,9 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 4,
+    "order": 3,
     "taskNumber": "MC-11"
   },
   {
@@ -106,9 +106,9 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 5,
+    "order": 4,
     "taskNumber": "MC-13"
   },
   {
@@ -122,14 +122,14 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 6,
+    "order": 5,
     "taskNumber": "MC-14"
   },
   {
     "id": "c4f0a326-587b-460e-98bb-ede8ff7afeeb",
-    "title": "Create \u201cWeekly deliverable\u201d template (demo repo + README + post)",
+    "title": "Create “Weekly deliverable” template (demo repo + README + post)",
     "description": "",
     "status": "backlog",
     "priority": "medium",
@@ -138,9 +138,9 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 7,
+    "order": 9,
     "taskNumber": "MC-15"
   },
   {
@@ -154,14 +154,14 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 8,
+    "order": 10,
     "taskNumber": "MC-16"
   },
   {
     "id": "86f53cfa-afa7-43cc-93b6-5a9fae75ffaa",
-    "title": "Create a Sunday 45-min \u201cMoney Block\u201d checklist",
+    "title": "Create a Sunday 45-min “Money Block” checklist",
     "description": "",
     "status": "backlog",
     "priority": "medium",
@@ -170,9 +170,9 @@
     ],
     "assignee": "josh",
     "createdAt": "2026-02-13T03:05:22.947Z",
-    "updatedAt": "2026-02-13T03:32:07.882Z",
+    "updatedAt": "2026-02-13T04:12:53.654Z",
     "dueDate": null,
-    "order": 9,
+    "order": 6,
     "taskNumber": "MC-17"
   },
   {
