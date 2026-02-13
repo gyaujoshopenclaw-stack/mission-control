@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 const DATA_DIR = path.join(process.cwd(), 'data');
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json');
 const ACTIVITY_FILE = path.join(DATA_DIR, 'activity.json');
+const META_FILE = path.join(DATA_DIR, 'meta.json');
 const BACKUPS_DIR = path.join(DATA_DIR, 'backups');
 
 // Ensure dirs exist
@@ -13,10 +14,29 @@ const BACKUPS_DIR = path.join(DATA_DIR, 'backups');
 // Initialize files if missing
 if (!fs.existsSync(TASKS_FILE)) fs.writeFileSync(TASKS_FILE, '[]');
 if (!fs.existsSync(ACTIVITY_FILE)) fs.writeFileSync(ACTIVITY_FILE, '[]');
+if (!fs.existsSync(META_FILE)) fs.writeFileSync(META_FILE, JSON.stringify({ nextTaskNumber: 1 }));
+
+// Broadcast callback - set by server/index.ts
+let broadcastFn: ((event: { type: string; payload: unknown }) => void) | null = null;
+export function setBroadcast(fn: (event: { type: string; payload: unknown }) => void) {
+  broadcastFn = fn;
+}
+function broadcast(type: string, payload: unknown) {
+  if (broadcastFn) broadcastFn({ type, payload });
+}
 
 function readJSON(file: string): any[] {
   try { return JSON.parse(fs.readFileSync(file, 'utf-8')); }
   catch { return []; }
+}
+
+function readMeta(): { nextTaskNumber: number } {
+  try { return JSON.parse(fs.readFileSync(META_FILE, 'utf-8')); }
+  catch { return { nextTaskNumber: 1 }; }
+}
+
+function writeMeta(meta: { nextTaskNumber: number }) {
+  fs.writeFileSync(META_FILE, JSON.stringify(meta, null, 2));
 }
 
 function writeJSON(file: string, data: any[]) {
@@ -51,9 +71,15 @@ export function getTask(id: string) {
 
 export function createTask(data: any) {
   const tasks = readJSON(TASKS_FILE);
+  const meta = readMeta();
   const sameStatus = tasks.filter((t: any) => t.status === (data.status || 'backlog'));
+  const taskNumber = `MC-${meta.nextTaskNumber}`;
+  meta.nextTaskNumber++;
+  writeMeta(meta);
+
   const task = {
     id: uuidv4(),
+    taskNumber,
     title: data.title || 'Untitled',
     description: data.description || '',
     status: data.status || 'backlog',
@@ -68,6 +94,7 @@ export function createTask(data: any) {
   tasks.push(task);
   writeJSON(TASKS_FILE, tasks);
   logActivity('created', task.title, `Created in ${task.status}`);
+  broadcast('task.created', task);
   return task;
 }
 
@@ -76,14 +103,16 @@ export function updateTask(id: string, data: any) {
   const idx = tasks.findIndex((t: any) => t.id === id);
   if (idx === -1) return null;
   const old = tasks[idx];
-  const updated = { ...old, ...data, id: old.id, createdAt: old.createdAt, updatedAt: new Date().toISOString() };
+  const updated = { ...old, ...data, id: old.id, taskNumber: old.taskNumber, createdAt: old.createdAt, updatedAt: new Date().toISOString() };
   tasks[idx] = updated;
   writeJSON(TASKS_FILE, tasks);
-  
+
   if (old.status !== updated.status) {
     logActivity('moved', updated.title, `${old.status} → ${updated.status}`);
+    broadcast('task.moved', updated);
   } else {
     logActivity('updated', updated.title, 'Task updated');
+    broadcast('task.updated', updated);
   }
   return updated;
 }
@@ -96,6 +125,7 @@ export function deleteTask(id: string) {
   tasks.splice(idx, 1);
   writeJSON(TASKS_FILE, tasks);
   logActivity('deleted', task.title, 'Task deleted');
+  broadcast('task.deleted', { id, title: task.title });
   return true;
 }
 
@@ -103,7 +133,6 @@ export function getActivity(limit = 50) {
   return readJSON(ACTIVITY_FILE).slice(0, limit);
 }
 
-// Bulk reorder tasks within a column
 export function reorderTasks(updates: { id: string; status: string; order: number }[]) {
   const tasks = readJSON(TASKS_FILE);
   for (const u of updates) {
@@ -117,4 +146,5 @@ export function reorderTasks(updates: { id: string; status: string; order: numbe
     }
   }
   writeJSON(TASKS_FILE, tasks);
+  broadcast('task.updated', { reorder: true, updates });
 }

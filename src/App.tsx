@@ -6,6 +6,7 @@ import { ActivityFeed } from './components/ActivityFeed/ActivityFeed';
 import { TaskDetail } from './components/TaskDetail/TaskDetail';
 import { CommandPalette } from './components/CommandPalette/CommandPalette';
 import { LaunchSequence } from './components/LaunchSequence';
+import { connectWebSocket, disconnectWebSocket } from './lib/websocket';
 
 function App() {
   const { fetchTasks, fetchActivity, selectedTaskId } = useTaskStore();
@@ -14,12 +15,8 @@ function App() {
   useEffect(() => {
     fetchTasks();
     fetchActivity();
-    // Poll every 5s for external changes
-    const interval = setInterval(() => {
-      fetchTasks();
-      fetchActivity();
-    }, 5000);
-    return () => clearInterval(interval);
+    connectWebSocket();
+    return () => disconnectWebSocket();
   }, [fetchTasks, fetchActivity]);
 
   // Keyboard shortcuts

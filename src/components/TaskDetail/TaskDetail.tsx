@@ -26,7 +26,7 @@ export function TaskDetail() {
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-96 bg-[#0d1117] border-l border-[#1e293b] shadow-2xl z-50 flex flex-col animate-fade-in">
+    <div className="fixed inset-y-0 right-0 w-96 max-sm:inset-x-0 max-sm:top-auto max-sm:bottom-0 max-sm:w-full max-sm:max-h-[85vh] max-sm:rounded-t-2xl bg-[#0d1117] border-l max-sm:border-l-0 max-sm:border-t border-[#1e293b] shadow-2xl z-50 flex flex-col animate-fade-in">
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e293b]">
         <h3 className="text-sm font-semibold">Task Detail</h3>
         <button onClick={() => selectTask(null)} className="text-[#94a3b8] hover:text-white">

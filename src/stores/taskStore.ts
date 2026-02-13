@@ -11,6 +11,7 @@ interface TaskStore {
   filterLabel: string | null;
   commandPaletteOpen: boolean;
   loading: boolean;
+  lastCompletedAt: number;
 
   fetchTasks: () => Promise<void>;
   fetchActivity: () => Promise<void>;
@@ -24,6 +25,7 @@ interface TaskStore {
   setFilterPriority: (p: string | null) => void;
   setFilterLabel: (l: string | null) => void;
   toggleCommandPalette: () => void;
+  setLastCompletedAt: (ts: number) => void;
 
   getFilteredTasks: (status: TaskStatus) => Task[];
 }
@@ -37,6 +39,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   filterLabel: null,
   commandPaletteOpen: false,
   loading: false,
+  lastCompletedAt: 0,
 
   fetchTasks: async () => {
     const tasks = await api.getTasks();
@@ -97,6 +100,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   setFilterPriority: (p) => set({ filterPriority: p }),
   setFilterLabel: (l) => set({ filterLabel: l }),
   toggleCommandPalette: () => set(s => ({ commandPaletteOpen: !s.commandPaletteOpen })),
+  setLastCompletedAt: (ts) => set({ lastCompletedAt: ts }),
 
   getFilteredTasks: (status) => {
     const { tasks, searchQuery, filterPriority, filterLabel } = get();

@@ -1,15 +1,15 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import {
   DndContext,
   DragOverlay,
   closestCorners,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
-import { useState } from 'react';
 import { COLUMNS, type TaskStatus } from '../../types/task';
 import { useTaskStore } from '../../stores/taskStore';
 import { Column } from './Column';
@@ -17,11 +17,13 @@ import { TaskCard } from './TaskCard';
 import confetti from 'canvas-confetti';
 
 export function Board() {
-  const { tasks, moveTask, reorderTasks } = useTaskStore();
+  const { tasks, reorderTasks, setLastCompletedAt } = useTaskStore();
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [mobileColumn, setMobileColumn] = useState<TaskStatus>('todo');
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
   );
 
   const activeTask = activeId ? tasks.find(t => t.id === activeId) : null;
@@ -39,7 +41,6 @@ export function Board() {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
 
-    // Determine target column
     let targetStatus: TaskStatus;
     const overTask = tasks.find(t => t.id === over.id);
     if (overTask) {
@@ -48,14 +49,13 @@ export function Board() {
       targetStatus = over.id as TaskStatus;
     }
 
-    // Confetti on moving to done!
     if (targetStatus === 'done' && task.status !== 'done') {
       confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+      setLastCompletedAt(Date.now());
     }
 
     if (task.status === targetStatus && !overTask) return;
 
-    // Calculate new order
     const columnTasks = tasks
       .filter(t => t.status === targetStatus && t.id !== taskId)
       .sort((a, b) => a.order - b.order);
@@ -68,16 +68,15 @@ export function Board() {
       newOrder = columnTasks.length;
     }
 
-    // Build reorder updates
     const updates: { id: string; status: string; order: number }[] = [];
     const reordered = [...columnTasks];
-    reordered.splice(newOrder, 0, { ...task, status: targetStatus } as any);
+    reordered.splice(newOrder, 0, { ...task, status: targetStatus } as typeof task);
     reordered.forEach((t, i) => {
       updates.push({ id: t.id, status: targetStatus, order: i });
     });
 
     reorderTasks(updates);
-  }, [tasks, moveTask, reorderTasks]);
+  }, [tasks, reorderTasks, setLastCompletedAt]);
 
   return (
     <DndContext
@@ -86,15 +85,41 @@ export function Board() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex gap-4 px-6 py-4 overflow-x-auto flex-1">
+      {/* Mobile tab bar */}
+      <div className="flex lg:hidden overflow-x-auto gap-1 px-3 py-2 bg-[#0d1117] border-b border-[#1e293b] shrink-0">
+        {COLUMNS.map(col => (
+          <button
+            key={col.id}
+            onClick={() => setMobileColumn(col.id)}
+            className={`px-3 py-2 text-xs font-medium rounded-lg whitespace-nowrap min-h-[2.75rem] transition-colors ${
+              mobileColumn === col.id
+                ? 'bg-[#3b82f6] text-white'
+                : 'text-[#94a3b8] hover:bg-[#1a2035]'
+            }`}
+          >
+            {col.title}
+          </button>
+        ))}
+      </div>
+
+      {/* Desktop: all columns */}
+      <div className="hidden lg:flex gap-4 px-6 py-4 overflow-x-auto flex-1">
         {COLUMNS.map(col => (
           <Column key={col.id} id={col.id} title={col.title} />
         ))}
       </div>
+
+      {/* Mobile: single column */}
+      <div className="flex lg:hidden flex-1 overflow-hidden px-2 py-2">
+        <div className="w-full">
+          <Column id={mobileColumn} title={COLUMNS.find(c => c.id === mobileColumn)?.title || ''} />
+        </div>
+      </div>
+
       <DragOverlay>
         {activeTask ? (
-          <div className="w-72 opacity-90 rotate-2">
-            <TaskCard task={activeTask} />
+          <div className="w-72 md:w-80">
+            <TaskCard task={activeTask} overlay />
           </div>
         ) : null}
       </DragOverlay>

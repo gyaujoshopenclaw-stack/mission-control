@@ -4,6 +4,7 @@ export type TaskAssignee = 'josh' | 'openclaw';
 
 export interface Task {
   id: string;
+  taskNumber: string;
   title: string;
   description: string;
   status: TaskStatus;
