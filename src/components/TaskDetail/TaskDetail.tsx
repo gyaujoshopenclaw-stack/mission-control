@@ -118,7 +118,7 @@ export function TaskDetail() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="josh">Josh</SelectItem>
-                  <SelectItem value="openclaw">OpenClaw</SelectItem>
+                  <SelectItem value="kai">Kai</SelectItem>
                 </SelectContent>
               </Select>
             </div>

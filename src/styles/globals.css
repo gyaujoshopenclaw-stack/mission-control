@@ -62,6 +62,63 @@
   --mc-purple: oklch(0.60 0.20 300);
 }
 
+/* =============================================
+   Midnight Theme — Warm neutral dark palette
+   ============================================= */
+[data-theme="midnight"] {
+  /* Core surfaces — warmer, more neutral grays */
+  --background: oklch(0.14 0.005 270);
+  --foreground: oklch(0.92 0.008 80);
+
+  /* Cards */
+  --card: oklch(0.18 0.006 270);
+  --card-foreground: oklch(0.92 0.008 80);
+
+  /* Popovers / dropdowns */
+  --popover: oklch(0.16 0.007 270);
+  --popover-foreground: oklch(0.92 0.008 80);
+
+  /* Primary action — warm amber/gold */
+  --primary: oklch(0.72 0.16 75);
+  --primary-foreground: oklch(0.15 0.005 270);
+
+  /* Secondary */
+  --secondary: oklch(0.22 0.006 270);
+  --secondary-foreground: oklch(0.85 0.008 80);
+
+  /* Muted */
+  --muted: oklch(0.21 0.005 270);
+  --muted-foreground: oklch(0.55 0.008 80);
+
+  /* Accent (hover surfaces) */
+  --accent: oklch(0.26 0.008 270);
+  --accent-foreground: oklch(0.92 0.008 80);
+
+  /* Destructive */
+  --destructive: oklch(0.55 0.2 25);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  /* Borders & inputs */
+  --border: oklch(0.29 0.006 270);
+  --input: oklch(0.26 0.007 270);
+  --ring: oklch(0.72 0.16 75);
+
+  /* Sidebar */
+  --sidebar: oklch(0.11 0.005 270);
+  --sidebar-foreground: oklch(0.85 0.008 80);
+  --sidebar-border: oklch(0.26 0.005 270);
+  --sidebar-accent: oklch(0.23 0.008 270);
+  --sidebar-accent-foreground: oklch(0.92 0.008 80);
+  --sidebar-ring: oklch(0.72 0.16 75);
+
+  /* Mission Control custom status colors — slightly warmer */
+  --mc-success: oklch(0.65 0.17 155);
+  --mc-warning: oklch(0.75 0.16 85);
+  --mc-cyan: oklch(0.68 0.10 210);
+  --mc-orange: oklch(0.72 0.18 55);
+  --mc-purple: oklch(0.62 0.18 305);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

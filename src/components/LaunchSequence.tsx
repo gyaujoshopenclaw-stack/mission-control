@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { KaiAvatar } from './KaiAvatar';
 
 export function LaunchSequence({ onComplete }: { onComplete: () => void }) {
   const [phase, setPhase] = useState(0);
@@ -17,21 +18,20 @@ export function LaunchSequence({ onComplete }: { onComplete: () => void }) {
   return (
     <div className="fixed inset-0 z-[200] bg-background flex items-center justify-center">
       <div className="text-center space-y-4">
-        {/* Mascot with glow ring */}
+        {/* Kai mascot with glow ring */}
         <div
           className={cn(
             'mx-auto w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500 border-2',
             phase >= 1 ? 'animate-ring-glow border-amber-500/40' : 'border-border',
           )}
         >
-          <span
+          <KaiAvatar
+            size={56}
             className={cn(
-              'text-4xl transition-all duration-300',
+              'transition-all duration-300',
               phase >= 1 ? 'scale-110' : 'scale-100 opacity-50',
             )}
-          >
-            &#x1F916;
-          </span>
+          />
         </div>
 
         <h1
@@ -40,7 +40,7 @@ export function LaunchSequence({ onComplete }: { onComplete: () => void }) {
             phase >= 2 ? 'text-foreground opacity-100' : 'text-transparent opacity-0',
           )}
         >
-          Open Claw
+          Kai
         </h1>
         <div className="flex items-center justify-center gap-2">
           {['Systems', 'Comms', 'Data'].map((label, i) => (
@@ -51,7 +51,7 @@ export function LaunchSequence({ onComplete }: { onComplete: () => void }) {
                 phase >= 2 + (i * 0.3) ? 'text-emerald-400 bg-emerald-400/10' : 'text-border',
               )}
             >
-              ● {label}
+              {label}
             </span>
           ))}
         </div>

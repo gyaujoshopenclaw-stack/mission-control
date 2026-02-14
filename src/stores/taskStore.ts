@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { api } from '../lib/api';
-import type { Task, Activity, TaskStatus, AppTab } from '../types/task';
+import type { Task, Activity, TaskStatus, AppTab, ThemeName, Upgrade } from '../types/task';
 import { DEFAULT_VISIBLE_COLUMNS } from '../types/task';
 
 export type Density = 'compact' | 'comfortable' | 'spacious';
-export type ClawStatus = 'online' | 'thinking' | 'offline';
+export type KaiStatus = 'online' | 'thinking' | 'offline';
 
 interface TaskStore {
   tasks: Task[];
@@ -19,11 +19,20 @@ interface TaskStore {
   density: Density;
   activeTab: AppTab;
   visibleColumns: TaskStatus[];
-  clawStatus: ClawStatus;
+  kaiStatus: KaiStatus;
   sidebarOpen: boolean;
+  showQuickStats: boolean;
+  showActivityFeed: boolean;
+  showUpgradesPanel: boolean;
+  theme: ThemeName;
+  upgrades: Upgrade[];
 
   fetchTasks: () => Promise<void>;
   fetchActivity: () => Promise<void>;
+  fetchUpgrades: () => Promise<void>;
+  updateUpgrade: (id: string, data: Partial<Upgrade>) => Promise<void>;
+  deleteUpgrade: (id: string) => Promise<void>;
+  generateUpgrades: () => Promise<void>;
   createTask: (data: Partial<Task>) => Promise<Task>;
   updateTask: (id: string, data: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
@@ -39,8 +48,12 @@ interface TaskStore {
   setActiveTab: (tab: AppTab) => void;
   setVisibleColumns: (cols: TaskStatus[]) => void;
   toggleColumnVisibility: (col: TaskStatus) => void;
-  setClawStatus: (s: ClawStatus) => void;
+  setKaiStatus: (s: KaiStatus) => void;
   toggleSidebar: () => void;
+  setShowQuickStats: (v: boolean) => void;
+  setShowActivityFeed: (v: boolean) => void;
+  setShowUpgradesPanel: (v: boolean) => void;
+  setTheme: (t: ThemeName) => void;
 
   getFilteredTasks: (status: TaskStatus) => Task[];
 }
@@ -61,6 +74,38 @@ function loadVisibleColumns(): TaskStatus[] {
   return DEFAULT_VISIBLE_COLUMNS;
 }
 
+function loadShowQuickStats(): boolean {
+  try {
+    const v = localStorage.getItem('mc-show-quick-stats');
+    if (v !== null) return JSON.parse(v);
+  } catch {}
+  return true;
+}
+
+function loadShowActivityFeed(): boolean {
+  try {
+    const v = localStorage.getItem('mc-show-activity-feed');
+    if (v !== null) return JSON.parse(v);
+  } catch {}
+  return true;
+}
+
+function loadShowUpgradesPanel(): boolean {
+  try {
+    const v = localStorage.getItem('mc-show-upgrades-panel');
+    if (v !== null) return JSON.parse(v);
+  } catch {}
+  return true;
+}
+
+function loadTheme(): ThemeName {
+  try {
+    const v = localStorage.getItem('mc-theme');
+    if (v === 'space-ops' || v === 'midnight') return v;
+  } catch {}
+  return 'space-ops';
+}
+
 export const useTaskStore = create<TaskStore>((set, get) => ({
   tasks: [],
   activity: [],
@@ -74,8 +119,13 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   density: loadDensity(),
   activeTab: 'dashboard',
   visibleColumns: loadVisibleColumns(),
-  clawStatus: 'online',
-  sidebarOpen: true,
+  kaiStatus: 'online',
+  sidebarOpen: false,
+  showQuickStats: loadShowQuickStats(),
+  showActivityFeed: loadShowActivityFeed(),
+  showUpgradesPanel: loadShowUpgradesPanel(),
+  theme: loadTheme(),
+  upgrades: [],
 
   fetchTasks: async () => {
     const tasks = await api.getTasks();
@@ -85,6 +135,31 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   fetchActivity: async () => {
     const activity = await api.getActivity();
     set({ activity });
+  },
+
+  fetchUpgrades: async () => {
+    const upgrades = await api.getUpgrades();
+    set({ upgrades });
+  },
+
+  updateUpgrade: async (id, data) => {
+    await api.updateUpgrade(id, data);
+    await get().fetchUpgrades();
+  },
+
+  deleteUpgrade: async (id) => {
+    await api.deleteUpgrade(id);
+    await get().fetchUpgrades();
+  },
+
+  generateUpgrades: async () => {
+    set({ kaiStatus: 'thinking' });
+    try {
+      await api.generateUpgrades();
+      await get().fetchUpgrades();
+    } finally {
+      set({ kaiStatus: 'online' });
+    }
   },
 
   createTask: async (data) => {
@@ -152,8 +227,25 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     localStorage.setItem('mc-visible-columns', JSON.stringify(next));
     set({ visibleColumns: next });
   },
-  setClawStatus: (s) => set({ clawStatus: s }),
+  setKaiStatus: (s) => set({ kaiStatus: s }),
   toggleSidebar: () => set(s => ({ sidebarOpen: !s.sidebarOpen })),
+  setShowQuickStats: (v) => {
+    localStorage.setItem('mc-show-quick-stats', JSON.stringify(v));
+    set({ showQuickStats: v });
+  },
+  setShowActivityFeed: (v) => {
+    localStorage.setItem('mc-show-activity-feed', JSON.stringify(v));
+    set({ showActivityFeed: v });
+  },
+  setShowUpgradesPanel: (v) => {
+    localStorage.setItem('mc-show-upgrades-panel', JSON.stringify(v));
+    set({ showUpgradesPanel: v });
+  },
+  setTheme: (t) => {
+    localStorage.setItem('mc-theme', t);
+    document.documentElement.setAttribute('data-theme', t);
+    set({ theme: t });
+  },
 
   getFilteredTasks: (status) => {
     const { tasks, searchQuery, filterPriority, filterLabel } = get();

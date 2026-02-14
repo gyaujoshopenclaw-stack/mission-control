@@ -1,6 +1,6 @@
 export type TaskStatus = 'backlog' | 'todo' | 'in-progress' | 'review' | 'done' | 'archived';
 export type TaskPriority = 'critical' | 'high' | 'medium' | 'low';
-export type TaskAssignee = 'josh' | 'openclaw';
+export type TaskAssignee = 'josh' | 'kai';
 
 export interface Task {
   id: string;
@@ -41,6 +41,21 @@ export const PRIORITY_CONFIG: Record<TaskPriority, { label: string; emoji: strin
   low: { label: 'Low', emoji: '🔵', color: '#3b82f6' },
 };
 
-export type AppTab = 'dashboard' | 'docs' | 'log';
+export type AppTab = 'dashboard' | 'backlog' | 'upgrades' | 'docs' | 'log' | 'settings';
+export type ThemeName = 'space-ops' | 'midnight';
+
+export type UpgradeStatus = 'proposed' | 'approved' | 'in-progress' | 'completed' | 'cancelled';
+
+export interface Upgrade {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: UpgradeStatus;
+  rank: number;
+  estimatedImpact: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export const DEFAULT_VISIBLE_COLUMNS: TaskStatus[] = ['todo', 'in-progress', 'done', 'archived'];

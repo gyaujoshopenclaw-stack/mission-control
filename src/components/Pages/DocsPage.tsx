@@ -11,7 +11,7 @@ export function DocsPage() {
           </div>
           <h2 className="text-xl font-bold text-foreground mb-2">Documentation</h2>
           <p className="text-sm text-muted-foreground mb-6">
-            Project docs, API reference, and OpenClaw integration guides will live here.
+            Project docs, API reference, and Kai integration guides will live here.
           </p>
           <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
             <ExternalLink size={12} />

@@ -21,10 +21,13 @@ export function connectWebSocket() {
     try {
       const data = JSON.parse(event.data);
       if (data.type === 'connected') return;
-      // Refresh store on any task event
       const store = useTaskStore.getState();
-      store.fetchTasks();
-      store.fetchActivity();
+      if (data.type?.startsWith('upgrade.')) {
+        store.fetchUpgrades();
+      } else {
+        store.fetchTasks();
+        store.fetchActivity();
+      }
     } catch {
       // ignore parse errors
     }

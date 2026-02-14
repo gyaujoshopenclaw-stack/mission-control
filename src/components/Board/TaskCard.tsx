@@ -1,7 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Task } from '../../types/task';
-import { PRIORITY_CONFIG } from '../../types/task';
 import { useTaskStore } from '../../stores/taskStore';
 import { cn } from '@/lib/utils';
 
@@ -27,25 +26,14 @@ const LABEL_EMOJIS: Record<string, string> = {
   refactor: '\uD83D\uDD27',
 };
 
-function getTaskEmoji(task: Task): string {
+function getTaskEmoji(task: Task): string | null {
   for (const label of task.labels) {
     const key = label.toLowerCase();
     if (LABEL_EMOJIS[key]) return LABEL_EMOJIS[key];
   }
   if (task.priority === 'critical') return '\uD83D\uDEA8';
   if (task.priority === 'high') return '\uD83D\uDD25';
-  return '\uD83D\uDCCB';
-}
-
-function getSubtitle(task: Task): string {
-  const parts: string[] = [];
-  if (task.priority) parts.push(`Priority: ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}`);
-  if (task.dueDate) {
-    const d = new Date(task.dueDate);
-    parts.push(`Due: ${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`);
-  }
-  if (task.assignee) parts.push(`Assigned to: ${task.assignee.charAt(0).toUpperCase() + task.assignee.slice(1)}`);
-  return parts[0] || '';
+  return null;
 }
 
 export function TaskCard({ task, overlay }: Props) {
@@ -65,10 +53,8 @@ export function TaskCard({ task, overlay }: Props) {
     opacity: isDragging ? 0.4 : 1,
   };
 
-  const priority = PRIORITY_CONFIG[task.priority];
   const isSelected = selectedTaskId === task.id;
   const emoji = getTaskEmoji(task);
-  const subtitle = getSubtitle(task);
 
   return (
     <div
@@ -90,18 +76,16 @@ export function TaskCard({ task, overlay }: Props) {
         }
       }}
     >
-      <div className="flex items-start gap-2 mb-1.5">
-        <span className="text-sm shrink-0 mt-0.5">{emoji}</span>
-        <h4 className="card-title font-semibold text-card-foreground line-clamp-2 leading-snug">{task.title}</h4>
-      </div>
-
-      <div className="flex items-center gap-2 pl-6">
-        <span
-          className="w-2 h-2 rounded-full shrink-0"
-          style={{ backgroundColor: priority.color }}
-          title={priority.label}
-        />
-        <span className="text-xs text-muted-foreground truncate">{subtitle}</span>
+      <div className="flex items-start gap-2">
+        {emoji && <span className="text-sm shrink-0 mt-0.5">{emoji}</span>}
+        <div className="flex-1 min-w-0">
+          <span className="text-[0.65rem] font-mono text-muted-foreground">
+            {task.taskNumber}
+          </span>
+          <h4 className="card-title font-semibold text-card-foreground line-clamp-2 leading-snug">
+            {task.title}
+          </h4>
+        </div>
       </div>
     </div>
   );

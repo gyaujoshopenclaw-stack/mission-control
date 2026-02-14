@@ -10,18 +10,27 @@ import { CommandPalette } from './components/CommandPalette/CommandPalette';
 import { LaunchSequence } from './components/LaunchSequence';
 import { DocsPage } from './components/Pages/DocsPage';
 import { LogPage } from './components/Pages/LogPage';
+import { SettingsPage } from './components/Pages/SettingsPage';
+import { BacklogPage } from './components/Pages/BacklogPage';
+import { UpgradesPage } from './components/Pages/UpgradesPage';
+import { UpgradesPanel } from './components/Dashboard/UpgradesPanel';
 import { connectWebSocket, disconnectWebSocket } from './lib/websocket';
 
 function App() {
-  const { fetchTasks, fetchActivity, density, activeTab } = useTaskStore();
+  const { fetchTasks, fetchActivity, fetchUpgrades, density, activeTab, showQuickStats, showActivityFeed, showUpgradesPanel, theme } = useTaskStore();
   const [launched, setLaunched] = useState(false);
 
   useEffect(() => {
     fetchTasks();
     fetchActivity();
+    fetchUpgrades();
     connectWebSocket();
     return () => disconnectWebSocket();
-  }, [fetchTasks, fetchActivity]);
+  }, [fetchTasks, fetchActivity, fetchUpgrades]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -54,16 +63,21 @@ function App() {
         {activeTab === 'dashboard' && (
           <div className="flex flex-col flex-1 overflow-hidden">
             <Board />
-            {/* Bottom panels */}
-            <div className="hidden md:flex gap-4 px-6 py-3 shrink-0">
-              <ActivityFeed />
-              <QuickStats />
-            </div>
+            {(showQuickStats || showActivityFeed || showUpgradesPanel) && (
+              <div className="hidden md:flex gap-4 px-6 py-3 shrink-0">
+                {showActivityFeed && <ActivityFeed />}
+                {showUpgradesPanel && <UpgradesPanel />}
+                {showQuickStats && <QuickStats />}
+              </div>
+            )}
           </div>
         )}
 
+        {activeTab === 'backlog' && <BacklogPage />}
+        {activeTab === 'upgrades' && <UpgradesPage />}
         {activeTab === 'docs' && <DocsPage />}
         {activeTab === 'log' && <LogPage />}
+        {activeTab === 'settings' && <SettingsPage />}
       </div>
 
       {/* Overlays */}

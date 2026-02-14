@@ -8,6 +8,8 @@ import { cn } from '@/lib/utils';
 
 const TABS: { id: AppTab; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
+  { id: 'backlog', label: 'Backlog' },
+  { id: 'upgrades', label: 'Upgrades' },
   { id: 'docs', label: 'Docs' },
   { id: 'log', label: 'Log' },
 ];

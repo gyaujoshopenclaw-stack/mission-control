@@ -17,4 +17,10 @@ export const api = {
   deleteTask: (id: string) => request(`/tasks/${id}`, { method: 'DELETE' }),
   reorderTasks: (updates: any[]) => request('/tasks/reorder', { method: 'POST', body: JSON.stringify({ updates }) }),
   getActivity: (limit = 50) => request(`/activity?limit=${limit}`),
+
+  // Upgrades
+  getUpgrades: (status?: string) => request(status ? `/upgrades?status=${status}` : '/upgrades'),
+  updateUpgrade: (id: string, data: any) => request(`/upgrades/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  deleteUpgrade: (id: string) => request(`/upgrades/${id}`, { method: 'DELETE' }),
+  generateUpgrades: () => request('/upgrades/generate', { method: 'POST' }),
 };

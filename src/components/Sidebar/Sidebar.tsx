@@ -1,6 +1,7 @@
-import { LayoutDashboard, FileText, ScrollText, BarChart3, Settings, HelpCircle, Menu } from 'lucide-react';
+import { LayoutDashboard, FileText, ScrollText, BarChart3, Settings, Inbox, Zap, Menu } from 'lucide-react';
 import { useTaskStore } from '../../stores/taskStore';
 import type { AppTab } from '../../types/task';
+import { KaiAvatar } from '../KaiAvatar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -17,14 +18,15 @@ import { cn } from '@/lib/utils';
 
 const NAV_ITEMS: { id: AppTab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'backlog', label: 'Backlog', icon: Inbox },
+  { id: 'upgrades', label: 'Upgrades', icon: Zap },
   { id: 'docs', label: 'Docs', icon: FileText },
   { id: 'log', label: 'Log', icon: ScrollText },
+  { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
 const FUTURE_NAV = [
   { label: 'Analytics', icon: BarChart3 },
-  { label: 'Settings', icon: Settings },
-  { label: 'Support', icon: HelpCircle },
 ];
 
 const STATUS_TEXT: Record<string, string> = {
@@ -34,34 +36,34 @@ const STATUS_TEXT: Record<string, string> = {
 };
 
 function SidebarContent({ onNavClick }: { onNavClick?: () => void }) {
-  const { activeTab, setActiveTab, clawStatus } = useTaskStore();
+  const { activeTab, setActiveTab, kaiStatus } = useTaskStore();
 
   return (
     <div className="flex flex-col items-center h-full py-6">
-      {/* Mascot with glowing ring */}
+      {/* Kai mascot with glowing ring */}
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-28 h-28 rounded-full flex items-center justify-center animate-ring-glow">
           <div className="w-24 h-24 rounded-full bg-secondary border-[3px] border-amber-400/50 flex items-center justify-center">
-            <span className="text-5xl animate-mascot-float">&#x1F916;</span>
+            <KaiAvatar size={64} className="animate-mascot-float" />
           </div>
         </div>
-        <h2 className="text-base font-bold text-foreground mt-3">Open Claw</h2>
+        <h2 className="text-base font-bold text-foreground mt-3">Kai</h2>
         <div className="flex items-center gap-1.5 mt-1">
           <span
             className={cn(
               'w-2.5 h-2.5 rounded-full',
-              clawStatus === 'online' && 'bg-emerald-400 animate-status-blink',
-              clawStatus === 'thinking' && 'bg-amber-400 animate-status-blink',
-              clawStatus === 'offline' && 'bg-red-400',
+              kaiStatus === 'online' && 'bg-emerald-400 animate-status-blink',
+              kaiStatus === 'thinking' && 'bg-amber-400 animate-status-blink',
+              kaiStatus === 'offline' && 'bg-red-400',
             )}
           />
-          <span className="text-xs text-muted-foreground capitalize">{clawStatus}</span>
+          <span className="text-xs text-muted-foreground capitalize">{kaiStatus}</span>
         </div>
       </div>
 
       {/* Status message */}
       <div className="text-xs text-muted-foreground text-center px-4 mb-6">
-        {STATUS_TEXT[clawStatus]}
+        {STATUS_TEXT[kaiStatus]}
       </div>
 
       {/* Main navigation */}
@@ -136,11 +138,13 @@ export function Sidebar() {
       </Button>
 
       {/* Mobile sidebar as Sheet */}
-      <Sheet open={sidebarOpen} onOpenChange={(open) => { if (!open) toggleSidebar(); }}>
-        <SheetContent side="left" className="w-[200px] bg-sidebar p-0 lg:hidden">
-          <SidebarContent onNavClick={toggleSidebar} />
-        </SheetContent>
-      </Sheet>
+      {sidebarOpen && (
+        <Sheet open={sidebarOpen} onOpenChange={(open) => { if (!open) toggleSidebar(); }}>
+          <SheetContent side="left" className="w-[200px] bg-sidebar p-0">
+            <SidebarContent onNavClick={toggleSidebar} />
+          </SheetContent>
+        </Sheet>
+      )}
 
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex w-[200px] shrink-0 h-full bg-sidebar border-r border-sidebar-border flex-col">

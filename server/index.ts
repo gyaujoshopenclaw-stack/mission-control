@@ -5,7 +5,9 @@ import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import taskRoutes from './routes/tasks.js';
+import upgradeRoutes from './routes/upgrades.js';
 import { setBroadcast } from './services/taskStore.js';
+import { setUpgradeBroadcast } from './services/upgradeStore.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -16,6 +18,7 @@ app.use(express.json());
 
 // API routes
 app.use('/api', taskRoutes);
+app.use('/api', upgradeRoutes);
 
 // Serve static frontend
 const distPath = path.join(__dirname, '..', 'dist');
@@ -39,14 +42,16 @@ server.on('upgrade', (request, socket, head) => {
 });
 
 // Set up broadcast
-setBroadcast((event) => {
+const broadcastHandler = (event: { type: string; payload: unknown }) => {
   const msg = JSON.stringify(event);
   for (const client of wss.clients) {
     if (client.readyState === 1) { // WebSocket.OPEN
       client.send(msg);
     }
   }
-});
+};
+setBroadcast(broadcastHandler);
+setUpgradeBroadcast(broadcastHandler);
 
 wss.on('connection', (ws) => {
   ws.send(JSON.stringify({ type: 'connected', payload: { message: 'Mission Control WebSocket connected' } }));
