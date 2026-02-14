@@ -9,24 +9,27 @@ router.get('/upgrades', (req: Request, res: Response) => {
 });
 
 router.get('/upgrades/:id', (req: Request, res: Response) => {
-  const upgrade = store.getUpgrade(req.params.id);
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const upgrade = store.getUpgrade(id);
   if (!upgrade) return res.status(404).json({ error: 'Not found' });
   res.json(upgrade);
 });
 
 router.patch('/upgrades/:id', (req: Request, res: Response) => {
-  const upgrade = store.updateUpgrade(req.params.id, req.body);
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const upgrade = store.updateUpgrade(id, req.body);
   if (!upgrade) return res.status(404).json({ error: 'Not found' });
   res.json(upgrade);
 });
 
 router.delete('/upgrades/:id', (req: Request, res: Response) => {
-  const ok = store.deleteUpgrade(req.params.id);
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const ok = store.deleteUpgrade(id);
   if (!ok) return res.status(404).json({ error: 'Not found' });
   res.json({ ok: true });
 });
 
-router.post('/upgrades/generate', async (req: Request, res: Response) => {
+router.post('/upgrades/generate', async (_req: Request, res: Response) => {
   try {
     const upgrades = await store.generateUpgrades();
     res.status(201).json(upgrades);

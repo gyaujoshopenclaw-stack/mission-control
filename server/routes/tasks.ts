@@ -9,7 +9,8 @@ router.get('/tasks', (req: Request, res: Response) => {
 });
 
 router.get('/tasks/:id', (req: Request, res: Response) => {
-  const task = store.getTask(req.params.id);
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const task = store.getTask(id);
   if (!task) return res.status(404).json({ error: 'Not found' });
   res.json(task);
 });
@@ -20,13 +21,15 @@ router.post('/tasks', (req: Request, res: Response) => {
 });
 
 router.patch('/tasks/:id', (req: Request, res: Response) => {
-  const task = store.updateTask(req.params.id, req.body);
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const task = store.updateTask(id, req.body);
   if (!task) return res.status(404).json({ error: 'Not found' });
   res.json(task);
 });
 
 router.delete('/tasks/:id', (req: Request, res: Response) => {
-  const ok = store.deleteTask(req.params.id);
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const ok = store.deleteTask(id);
   if (!ok) return res.status(404).json({ error: 'Not found' });
   res.json({ ok: true });
 });
