@@ -1,0 +1,272 @@
+[
+  {
+    "id": "9deba676-6380-4673-bacc-825afade6b47",
+    "title": "Opus root-cause",
+    "description": "capture real Anthropic error (logs/provider) + fix model availability",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "platform-automation"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 0
+  },
+  {
+    "id": "13b63daf-007a-43e1-bf10-5459123b0c52",
+    "title": "Remove/disable missing models in config (e.g. Grok) to prevent hard failures",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "platform-automation"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 1
+  },
+  {
+    "id": "3963bd3e-6a7e-44c7-944f-55b9845bd716",
+    "title": "Optional: harden server perms (`~/.openclaw` chmod 700) + quick security baseline",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "platform-automation"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 2
+  },
+  {
+    "id": "03f863b1-6134-46fb-b82c-41cba01162c2",
+    "title": "Convert your weekly plan into a 1-page **Weekly Card** (Mon–Sun)",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "ace-os-weekly-system"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 3
+  },
+  {
+    "id": "d16f2126-8bc4-48bf-8aa6-da0df7336a0f",
+    "title": "Build **Ace Dashboard** daily checklist (Health/Wealth/Social + anti-distraction)",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "ace-os-weekly-system"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 4
+  },
+  {
+    "id": "54d11105-dacd-4f2a-af78-ee1091596485",
+    "title": "“Bad Morning Recovery Protocol” template",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "ace-os-weekly-system"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 5
+  },
+  {
+    "id": "47248145-4c18-4090-8296-5d21603f260c",
+    "title": "Define a single **primary lane** for the next 2 weeks (automation vs ServiceNow AI vs vibe-coded tool)",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "ai-money-content-pipeline"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 6
+  },
+  {
+    "id": "acc30b3a-b09e-4b16-a7a3-2b96146368de",
+    "title": "Choose content platform first (YT vs Reels vs X) and define 3 post templates",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "ai-money-content-pipeline"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 7
+  },
+  {
+    "id": "c4f0a326-587b-460e-98bb-ede8ff7afeeb",
+    "title": "Create “Weekly deliverable” template (demo repo + README + post)",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "ai-money-content-pipeline"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 8
+  },
+  {
+    "id": "d3dbbc56-a759-4293-b1f9-fd53f58f8507",
+    "title": "Set a boring default ETF plan + sandbox learning allocation",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "financial-literacy-investing"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 9
+  },
+  {
+    "id": "86f53cfa-afa7-43cc-93b6-5a9fae75ffaa",
+    "title": "Create a Sunday 45-min “Money Block” checklist",
+    "description": "",
+    "status": "backlog",
+    "priority": "medium",
+    "labels": [
+      "financial-literacy-investing"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 10
+  },
+  {
+    "id": "d97a7dc2-7643-493a-8eb4-f7dd54b3c253",
+    "title": "Kanban board (this file) + operating rules",
+    "description": "",
+    "status": "in-progress",
+    "priority": "medium",
+    "labels": [
+      "financial-literacy-investing"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 0
+  },
+  {
+    "id": "9099ec12-33cf-4e45-ae73-f19e5a6d96a9",
+    "title": "Confirm your primary AI lane + primary content platform (needed to finalize the Weekly Card)",
+    "description": "",
+    "status": "review",
+    "priority": "medium",
+    "labels": [
+      "financial-literacy-investing"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 0
+  },
+  {
+    "id": "278b07a3-9b3c-45fc-8008-55a7eb2c7d2d",
+    "title": "Enable pre-compaction memory flush + session memory search sources (memory+sessions)",
+    "description": "",
+    "status": "done",
+    "priority": "medium",
+    "labels": [
+      "financial-literacy-investing"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 0
+  },
+  {
+    "id": "572fc705-1e92-4c6d-a4f2-0c7a78230e89",
+    "title": "Add Claude Opus 4.6 model alias; investigate Opus failures (symptoms recorded)",
+    "description": "",
+    "status": "done",
+    "priority": "medium",
+    "labels": [
+      "financial-literacy-investing"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 1
+  },
+  {
+    "id": "31082f4e-c3d2-404e-b304-1c9dac6b158c",
+    "title": "Set fallbacks to ChatGPT 5.2 only (stability)",
+    "description": "",
+    "status": "done",
+    "priority": "medium",
+    "labels": [
+      "financial-literacy-investing"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 2
+  },
+  {
+    "id": "22f1ab42-6cbd-4ec1-b7e4-7382587f1613",
+    "title": "Install Codex CLI + add PATH; authenticate; generate `index.html` to verify",
+    "description": "",
+    "status": "done",
+    "priority": "medium",
+    "labels": [
+      "financial-literacy-investing"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 3
+  },
+  {
+    "id": "5c961c24-fe52-47d1-a0b9-39829f282246",
+    "title": "Save your brain dump to durable memory (`memory/josh-brain-dump.md`)",
+    "description": "",
+    "status": "done",
+    "priority": "medium",
+    "labels": [
+      "financial-literacy-investing"
+    ],
+    "assignee": "josh",
+    "createdAt": "2026-02-13T03:05:22.947Z",
+    "updatedAt": "2026-02-13T03:05:22.947Z",
+    "dueDate": null,
+    "order": 4
+  }
+]

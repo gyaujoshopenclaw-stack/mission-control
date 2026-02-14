@@ -1,0 +1,184 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* =============================================
+   Mission Control — Dark Space-Ops Theme
+   shadcn/ui CSS variable conventions
+   ============================================= */
+
+:root {
+  --radius: 0.5rem;
+
+  /* Core surfaces */
+  --background: oklch(0.13 0.015 260);
+  --foreground: oklch(0.93 0.005 260);
+
+  /* Cards */
+  --card: oklch(0.17 0.015 260);
+  --card-foreground: oklch(0.93 0.005 260);
+
+  /* Popovers / dropdowns */
+  --popover: oklch(0.15 0.018 260);
+  --popover-foreground: oklch(0.93 0.005 260);
+
+  /* Primary action — blue */
+  --primary: oklch(0.62 0.17 255);
+  --primary-foreground: oklch(0.98 0 0);
+
+  /* Secondary */
+  --secondary: oklch(0.22 0.015 260);
+  --secondary-foreground: oklch(0.85 0.01 260);
+
+  /* Muted */
+  --muted: oklch(0.20 0.012 260);
+  --muted-foreground: oklch(0.55 0.01 260);
+
+  /* Accent (hover surfaces) */
+  --accent: oklch(0.25 0.02 260);
+  --accent-foreground: oklch(0.93 0.005 260);
+
+  /* Destructive */
+  --destructive: oklch(0.55 0.2 25);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  /* Borders & inputs */
+  --border: oklch(0.28 0.015 260);
+  --input: oklch(0.25 0.018 260);
+  --ring: oklch(0.62 0.17 255);
+
+  /* Sidebar */
+  --sidebar: oklch(0.10 0.015 260);
+  --sidebar-foreground: oklch(0.85 0.01 260);
+  --sidebar-border: oklch(0.25 0.012 260);
+  --sidebar-accent: oklch(0.22 0.02 260);
+  --sidebar-accent-foreground: oklch(0.93 0.005 260);
+  --sidebar-ring: oklch(0.62 0.17 255);
+
+  /* Mission Control custom status colors */
+  --mc-success: oklch(0.65 0.18 155);
+  --mc-warning: oklch(0.75 0.17 85);
+  --mc-cyan: oklch(0.70 0.14 200);
+  --mc-orange: oklch(0.70 0.19 50);
+  --mc-purple: oklch(0.60 0.20 300);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-mc-success: var(--mc-success);
+  --color-mc-warning: var(--mc-warning);
+  --color-mc-cyan: var(--mc-cyan);
+  --color-mc-orange: var(--mc-orange);
+  --color-mc-purple: var(--mc-purple);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+  }
+  #root {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: oklch(0.30 0.015 260); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: oklch(0.38 0.015 260); }
+
+/* Density modes */
+.density-compact .card-gap { gap: 0.5rem; }
+.density-compact .card-pad { padding: 0.625rem 0.75rem; }
+.density-compact .card-title { font-size: 0.8125rem; }
+.density-compact .col-gap { gap: 1rem; }
+
+.density-comfortable .card-gap { gap: 0.625rem; }
+.density-comfortable .card-pad { padding: 0.875rem 1rem; }
+.density-comfortable .card-title { font-size: 0.875rem; }
+.density-comfortable .col-gap { gap: 1.5rem; }
+
+.density-spacious .card-gap { gap: 0.75rem; }
+.density-spacious .card-pad { padding: 1.125rem 1.25rem; }
+.density-spacious .card-title { font-size: 0.9375rem; }
+.density-spacious .col-gap { gap: 2rem; }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.25s ease-out; }
+
+@keyframes ring-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px oklch(0.75 0.17 85 / 0.5), 0 0 45px oklch(0.75 0.17 85 / 0.25);
+  }
+  50% {
+    box-shadow: 0 0 35px oklch(0.75 0.17 85 / 0.7), 0 0 70px oklch(0.75 0.17 85 / 0.35);
+  }
+}
+.animate-ring-glow { animation: ring-glow 3s ease-in-out infinite; }
+
+@keyframes status-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.animate-status-blink { animation: status-blink 2s ease-in-out infinite; }
+
+@keyframes mascot-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.animate-mascot-float { animation: mascot-float 3s ease-in-out infinite; }
+
+/* Line clamp */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Touch targets on mobile */
+@media (max-width: 767px) {
+  button, [role="button"], a { min-height: 2.75rem; }
+}
