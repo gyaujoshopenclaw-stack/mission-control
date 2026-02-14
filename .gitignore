@@ -14,6 +14,14 @@ dist-ssr
 *.local
 .env
 
+# Runtime data (user-generated state)
+data/
+
+# Temporary deployment/test files
+DEPLOYMENT_STATUS.txt
+test-deployment.sh
+*.json.bak
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
