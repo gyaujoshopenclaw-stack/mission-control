@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:server": "tsc -p tsconfig.server.json",
     "server": "tsx server/index.ts",
-    "start": "npm run build && tsx server/index.ts",
+    "serve": "node --max-old-space-size=256 dist-server/index.js",
+    "start": "npm run build && npm run build:server && npm run serve",
     "migrate": "tsx scripts/migrate-kanban.ts",
     "lint": "eslint .",
     "preview": "vite preview"
