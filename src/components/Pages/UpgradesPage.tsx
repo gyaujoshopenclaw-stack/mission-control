@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Zap, Search, ArrowUpDown, ChevronDown, Sparkles, Loader2 } from 'lucide-react';
+import { Zap, Search, ArrowUpDown, ChevronDown, Sparkles, Loader2, Layers, Filter } from 'lucide-react';
 import { useTaskStore } from '../../stores/taskStore';
-import type { UpgradeStatus } from '../../types/task';
+import type { UpgradeStatus, Upgrade } from '../../types/task';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ import {
 import { cn } from '@/lib/utils';
 
 type SortField = 'rank' | 'created' | 'title' | 'status';
+type ViewFilter = 'active' | 'all' | 'archived';
 
 const STATUS_OPTIONS: { id: UpgradeStatus; label: string }[] = [
   { id: 'proposed', label: 'Proposed' },
@@ -48,6 +49,14 @@ const CATEGORY_COLORS: Record<string, string> = {
   automation: 'bg-teal-500/15 text-teal-400',
 };
 
+const CATEGORY_DOT_COLORS: Record<string, string> = {
+  tool: 'bg-purple-400',
+  feature: 'bg-cyan-400',
+  integration: 'bg-indigo-400',
+  optimization: 'bg-orange-400',
+  automation: 'bg-teal-400',
+};
+
 const STATUS_ORDER: Record<string, number> = {
   'in-progress': 0,
   approved: 1,
@@ -56,16 +65,119 @@ const STATUS_ORDER: Record<string, number> = {
   cancelled: 4,
 };
 
+const ACTIVE_STATUSES = new Set(['proposed', 'approved', 'in-progress']);
+const ARCHIVED_STATUSES = new Set(['completed', 'cancelled']);
+
+function UpgradeRow({
+  upgrade,
+  selected,
+  onToggleSelect,
+  onUpdateStatus,
+  showBorder,
+}: {
+  upgrade: Upgrade;
+  selected: boolean;
+  onToggleSelect: () => void;
+  onUpdateStatus: (status: UpgradeStatus) => void;
+  showBorder: boolean;
+}) {
+  const createdDate = new Date(upgrade.createdAt);
+
+  return (
+    <div
+      className={cn(
+        'flex items-center gap-3 px-4 py-3 transition-colors',
+        showBorder && 'border-b border-border',
+        selected && 'bg-primary/5',
+        'hover:bg-accent/50',
+      )}
+    >
+      <button
+        onClick={onToggleSelect}
+        className={cn(
+          'w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors',
+          selected
+            ? 'bg-primary border-primary'
+            : 'border-border hover:border-primary/50',
+        )}
+      >
+        {selected && (
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-primary-foreground" />
+          </svg>
+        )}
+      </button>
+
+      <span className="text-[0.65rem] font-mono text-muted-foreground w-5 text-right shrink-0">
+        #{upgrade.rank}
+      </span>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-foreground truncate">
+            {upgrade.title}
+          </span>
+          <Badge
+            variant="outline"
+            className={cn('text-[0.6rem] px-1.5 py-0 h-4 shrink-0', CATEGORY_COLORS[upgrade.category] || CATEGORY_COLORS.feature)}
+          >
+            {upgrade.category}
+          </Badge>
+        </div>
+        <p className="text-[0.65rem] text-muted-foreground truncate mt-0.5">
+          {upgrade.estimatedImpact}
+        </p>
+      </div>
+
+      <Badge
+        variant="outline"
+        className={cn('text-[0.6rem] px-1.5 py-0 h-5 shrink-0', STATUS_COLORS[upgrade.status] || STATUS_COLORS.proposed)}
+      >
+        {upgrade.status}
+      </Badge>
+
+      <span className="text-[0.65rem] text-muted-foreground shrink-0 hidden sm:block">
+        {createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+      </span>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-muted-foreground">
+            Status <ChevronDown size={12} className="ml-0.5" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {STATUS_OPTIONS.map(s => (
+            <DropdownMenuItem key={s.id} onClick={() => onUpdateStatus(s.id)}>
+              {s.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}
+
 export function UpgradesPage() {
   const { upgrades, updateUpgrade, generateUpgrades, kaiStatus } = useTaskStore();
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<SortField>('rank');
+  const [viewFilter, setViewFilter] = useState<ViewFilter>('active');
+  const [groupByCategory, setGroupByCategory] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const isGenerating = kaiStatus === 'thinking';
 
   const filteredUpgrades = useMemo(() => {
     let filtered = [...upgrades];
 
+    // View filter
+    if (viewFilter === 'active') {
+      filtered = filtered.filter(u => ACTIVE_STATUSES.has(u.status));
+    } else if (viewFilter === 'archived') {
+      filtered = filtered.filter(u => ARCHIVED_STATUSES.has(u.status));
+    }
+
+    // Search
     if (search) {
       const q = search.toLowerCase();
       filtered = filtered.filter(
@@ -75,6 +187,7 @@ export function UpgradesPage() {
       );
     }
 
+    // Sort
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'rank':
@@ -90,7 +203,18 @@ export function UpgradesPage() {
     });
 
     return filtered;
-  }, [upgrades, search, sortBy]);
+  }, [upgrades, search, sortBy, viewFilter]);
+
+  const groupedUpgrades = useMemo(() => {
+    if (!groupByCategory) return null;
+    const groups = new Map<string, Upgrade[]>();
+    for (const u of filteredUpgrades) {
+      const cat = u.category || 'other';
+      if (!groups.has(cat)) groups.set(cat, []);
+      groups.get(cat)!.push(u);
+    }
+    return new Map([...groups.entries()].sort(([a], [b]) => a.localeCompare(b)));
+  }, [filteredUpgrades, groupByCategory]);
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds(prev => {
@@ -126,9 +250,23 @@ export function UpgradesPage() {
     });
   }, [updateUpgrade]);
 
-  const activeCount = upgrades.filter(u =>
-    u.status === 'proposed' || u.status === 'approved' || u.status === 'in-progress'
-  ).length;
+  const activeCount = upgrades.filter(u => ACTIVE_STATUSES.has(u.status)).length;
+  const archivedCount = upgrades.filter(u => ARCHIVED_STATUSES.has(u.status)).length;
+
+  const renderUpgradeList = (items: Upgrade[]) => (
+    <>
+      {items.map((upgrade, i) => (
+        <UpgradeRow
+          key={upgrade.id}
+          upgrade={upgrade}
+          selected={selectedIds.has(upgrade.id)}
+          onToggleSelect={() => toggleSelect(upgrade.id)}
+          onUpdateStatus={(status) => updateOneStatus(upgrade.id, status)}
+          showBorder={i < items.length - 1}
+        />
+      ))}
+    </>
+  );
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden p-4 md:p-6 gap-4">
@@ -141,7 +279,7 @@ export function UpgradesPage() {
           <div>
             <h2 className="text-lg font-bold text-foreground">Upgrades</h2>
             <p className="text-xs text-muted-foreground">
-              {activeCount} active / {upgrades.length} total (max 10 active)
+              {activeCount} active · {archivedCount} archived · {upgrades.length} total (max 10 active)
             </p>
           </div>
         </div>
@@ -174,8 +312,20 @@ export function UpgradesPage() {
           />
         </div>
 
+        <Select value={viewFilter} onValueChange={(v) => setViewFilter(v as ViewFilter)}>
+          <SelectTrigger className="w-[130px] h-9">
+            <Filter size={13} className="mr-1.5 shrink-0" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="archived">Archived</SelectItem>
+          </SelectContent>
+        </Select>
+
         <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortField)}>
-          <SelectTrigger className="w-[170px] h-9">
+          <SelectTrigger className="w-[150px] h-9">
             <ArrowUpDown size={13} className="mr-1.5 shrink-0" />
             <SelectValue />
           </SelectTrigger>
@@ -186,6 +336,16 @@ export function UpgradesPage() {
             <SelectItem value="title">Title A-Z</SelectItem>
           </SelectContent>
         </Select>
+
+        <Button
+          variant={groupByCategory ? 'secondary' : 'outline'}
+          size="sm"
+          className="h-9 gap-1.5"
+          onClick={() => setGroupByCategory(v => !v)}
+        >
+          <Layers size={13} />
+          Group
+        </Button>
 
         {selectedIds.size > 0 && (
           <DropdownMenu>
@@ -232,95 +392,35 @@ export function UpgradesPage() {
                 <Zap size={24} className="text-muted-foreground" />
               </div>
               <p className="text-sm text-muted-foreground">
-                {search ? 'No upgrades match your search' : 'No upgrades yet. Click "Generate Upgrades" to let Kai suggest improvements.'}
+                {search
+                  ? 'No upgrades match your search'
+                  : viewFilter === 'archived'
+                    ? 'No archived upgrades'
+                    : 'No upgrades yet. Click "Generate Upgrades" to let Kai suggest improvements.'}
               </p>
             </div>
           )}
-          {filteredUpgrades.map((upgrade, i) => {
-            const selected = selectedIds.has(upgrade.id);
-            const createdDate = new Date(upgrade.createdAt);
 
-            return (
-              <div
-                key={upgrade.id}
-                className={cn(
-                  'flex items-center gap-3 px-4 py-3 transition-colors',
-                  i < filteredUpgrades.length - 1 && 'border-b border-border',
-                  selected && 'bg-primary/5',
-                  'hover:bg-accent/50',
-                )}
-              >
-                {/* Checkbox */}
-                <button
-                  onClick={() => toggleSelect(upgrade.id)}
-                  className={cn(
-                    'w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors',
-                    selected
-                      ? 'bg-primary border-primary'
-                      : 'border-border hover:border-primary/50',
-                  )}
-                >
-                  {selected && (
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-primary-foreground" />
-                    </svg>
-                  )}
-                </button>
-
-                {/* Rank */}
-                <span className="text-[0.65rem] font-mono text-muted-foreground w-5 text-right shrink-0">
-                  #{upgrade.rank}
-                </span>
-
-                {/* Title + description */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-foreground truncate">
-                      {upgrade.title}
-                    </span>
-                    <Badge
-                      variant="outline"
-                      className={cn('text-[0.6rem] px-1.5 py-0 h-4 shrink-0', CATEGORY_COLORS[upgrade.category] || CATEGORY_COLORS.feature)}
-                    >
-                      {upgrade.category}
+          {/* Grouped view */}
+          {groupedUpgrades && filteredUpgrades.length > 0 && (
+            <>
+              {[...groupedUpgrades.entries()].map(([category, items]) => (
+                <div key={category}>
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/50 border-b border-border sticky top-0 z-10">
+                    <span className={cn('w-2.5 h-2.5 rounded-full shrink-0', CATEGORY_DOT_COLORS[category] || 'bg-muted-foreground')} />
+                    <span className="text-xs font-semibold text-foreground capitalize">{category}</span>
+                    <Badge variant="secondary" className="text-[0.55rem] px-1.5 py-0 h-4">
+                      {items.length}
                     </Badge>
                   </div>
-                  <p className="text-[0.65rem] text-muted-foreground truncate mt-0.5">
-                    {upgrade.estimatedImpact}
-                  </p>
+                  {renderUpgradeList(items)}
                 </div>
+              ))}
+            </>
+          )}
 
-                {/* Status badge */}
-                <Badge
-                  variant="outline"
-                  className={cn('text-[0.6rem] px-1.5 py-0 h-5 shrink-0', STATUS_COLORS[upgrade.status] || STATUS_COLORS.proposed)}
-                >
-                  {upgrade.status}
-                </Badge>
-
-                {/* Created date */}
-                <span className="text-[0.65rem] text-muted-foreground shrink-0 hidden sm:block">
-                  {createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                </span>
-
-                {/* Status dropdown */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-muted-foreground">
-                      Status <ChevronDown size={12} className="ml-0.5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {STATUS_OPTIONS.map(s => (
-                      <DropdownMenuItem key={s.id} onClick={() => updateOneStatus(upgrade.id, s.id)}>
-                        {s.label}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            );
-          })}
+          {/* Flat view */}
+          {!groupedUpgrades && filteredUpgrades.length > 0 && renderUpgradeList(filteredUpgrades)}
         </ScrollArea>
       </Card>
     </div>
